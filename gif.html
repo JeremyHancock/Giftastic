@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+
+    <title>Giftastic!</title>
+</head>
+
+<body>
+    <div id="buttonHolder">
+        <button data-buttonName="batman" class="btn btn-default" id="" type="button">Batman</button>;
+        <button data-buttonName="joker" class="btn btn-default" id="" type="button">Joker</button>;
+        <button data-buttonName="the Green Lantern" class="btn btn-default" id="" type="button">The Green Lantern</button>;
+        <button data-buttonName="groot" class="btn btn-default" id="" type="button">Groot</button>;
+        <button data-buttonName="superman" class="btn btn-default" id="" type="button">Superman</button>;
+        <button data-buttonName="thanos" class="btn btn-default" id="" type="button">Thanos</button>;
+        <button data-buttonName="silver Surfer" class="btn btn-default" id="" type="button">Silver Surfer</button>;
+    </div>
+    <div id="gifSpot">
+    </div>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script>
+
+        $("button").on("click", function () {
+            var search = $(this).attr("data-buttonName");
+            var key = "&api_key=fIkVsSR38IPBG8U8aXmxcLA2TQO0R3ae"
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + search + key + "&limit=10";
+
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            })
+                .then(function (response) {
+                    // console.log(queryURL);
+
+                    var results = response.data;
+
+                    for (var i = 0; i < results.length; i++) {
+
+                        var gifDiv = $("<div>");
+
+                        var p = $("<p>").text("Rating: " + results[i].rating);
+                        // console.log(results[i]);
+                        var gifImage = $("<img id=gifImage>");
+                        gifImage.attr("src", results[i].images.fixed_height_small_still.url);
+                        gifImage.attr("data-still", results[i].images.fixed_height_small_still.url);
+                        gifImage.attr("data-animate", results[i].images.fixed_height_small.url);
+                        gifImage.attr("data-state", "still");
+                        // console.log(results[i].url);
+                        gifDiv.append(p);
+                        gifDiv.append(gifImage);
+                        $("#gifSpot").prepend(gifDiv);
+
+                        $("#gifImage").on("click", function () {
+                            var state = $(this).attr("data-state");
+                            if (state === "still") {
+                                $(this).attr("src", $(this).attr("data-animate"));
+                                $(this).attr("data-state", "animate");
+                                console.log(state);
+
+                            } else {
+                                $(this).attr("src", $(this).attr("data-still"));
+                                $(this).attr("data-state", "still");
+                                console.log(state);
+
+
+                            }
+                        });
+
+                    }
+                });
+
+        });
+    </script>
+
+
+</body>
+
+</html>
