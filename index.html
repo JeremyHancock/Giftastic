@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <!-- Just a little bit of CSS so I kept it here -->
     <style>
         body {
             background-image: url("images/background.jpg");
@@ -28,17 +29,19 @@
         }
 
     </style>
-
+<!-- Header image with a text overlay -->
     <div class="text-white">
         <img class="card-img max-width: 100%" src="images/captain-america-shield-image-cropped.jpg" alt="Header image">
         <div class="card-img-overlay">
             <h1>Choose your hero</h1>
         </div>
     </div>
+    <!-- Somewhere for the buttons to go -->
     <div class="row bg-dark">
         <div class="col-7 mx-auto" id="buttonHolder">
         </div>
         <div class="col-4 mx-auto" id="addButton">
+            <!-- This is where the form lives -->
             <form>
                 <div class="form-group">
                     <label for="entry">
@@ -52,31 +55,35 @@
             </div>
         </div>
     </div>
+    <!-- This is where all of the gifs will appear -->
     <div class="row col-12 transparent" id="gifSpot">
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script>
-
+        // pre-populated array
         var buttonArray = ["Batman", "Joker", "The Green Lantern", "Groot", "Superman", "Silver Surfer", "Dr. Strange"];
+        // This function emptys all the contents of the button Holder and then loops through the array
         function populateButtons() {
             $("#buttonHolder").empty();
             for (var i = 0; i < buttonArray.length; i++) {
+                // it creates a button for each element and gives it some bootstrap classes
                 var button = $("<button class='btn btn-dark m-2 gif-button'>");
                 button.text(buttonArray[i]);
                 button.attr("data-buttonName", buttonArray[i]);
+                // it puts each button into the buttonHolder div
                 $("#buttonHolder").append(button);
             }
         }
         populateButtons();
-
+        // This button puts the string the user entered into the button Array and populates all the buttons again
         $(document).on("click", "#submit", function () {
             event.preventDefault();
             var newButton = $("#entry").val().trim();
             buttonArray.push(newButton);
             populateButtons();
         });
-
+        // When a gif-button is pushed it puts together the URL query and calls the API
         $(document).on("click", '.gif-button', function () {
             var search = $(this).attr("data-buttonName");
             var key = "&api_key=fIkVsSR38IPBG8U8aXmxcLA2TQO0R3ae"
@@ -89,27 +96,29 @@
                 .then(function (response) {
 
                     var results = response.data;
-
                     for (var i = 0; i < results.length; i++) {
-
+                        // each gif is placed in a div, given a <p> tag for the rating, 
                         var gifDiv = $("<div>");
-
+                            
                         var p = $("<p>").text("Rating: " + results[i].rating);
+                        // src and attributes are set for still, animate, and state
                         var gifImage = $("<img class= m-2 id=gifImage>");
                         gifImage.attr("src", results[i].images.fixed_height_small_still.url);
                         gifImage.attr("data-still", results[i].images.fixed_height_small_still.url);
                         gifImage.attr("data-animate", results[i].images.fixed_height_small.url);
                         gifImage.attr("data-state", "still");
+                        //they div containing the object are placed in the html
                         gifDiv.append(p);
                         gifDiv.append(gifImage);
                         $("#gifSpot").prepend(gifDiv);
 
+                        //when a gif is clicked this switches from still to animate
                         $("#gifImage").on("click", function () {
                             var state = $(this).attr("data-state");
                             if (state === "still") {
                                 $(this).attr("src", $(this).attr("data-animate"));
                                 $(this).attr("data-state", "animate");
-
+                            // or from animate to still
                             } else {
                                 $(this).attr("src", $(this).attr("data-still"));
                                 $(this).attr("data-state", "still");
