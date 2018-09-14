@@ -12,22 +12,72 @@
 </head>
 
 <body>
-    <div id="buttonHolder">
-        <button data-buttonName="batman" class="btn btn-default" id="" type="button">Batman</button>;
-        <button data-buttonName="joker" class="btn btn-default" id="" type="button">Joker</button>;
-        <button data-buttonName="the Green Lantern" class="btn btn-default" id="" type="button">The Green Lantern</button>;
-        <button data-buttonName="groot" class="btn btn-default" id="" type="button">Groot</button>;
-        <button data-buttonName="superman" class="btn btn-default" id="" type="button">Superman</button>;
-        <button data-buttonName="thanos" class="btn btn-default" id="" type="button">Thanos</button>;
-        <button data-buttonName="silver Surfer" class="btn btn-default" id="" type="button">Silver Surfer</button>;
+    <style>
+        body {
+            background-image: url("images/background.jpg");
+            height: 100%;
+        }
+        h4 {
+            color: darkgray;
+        }
+        p {
+            color: white;
+        }
+        .transparent{
+            background-color: rgba(51, 51, 51, 0.767);
+        }
+
+    </style>
+
+    <div class="text-white">
+        <img class="card-img max-width: 100%" src="images/captain-america-shield-image-cropped.jpg" alt="Header image">
+        <div class="card-img-overlay">
+            <h1>Choose your hero</h1>
+        </div>
     </div>
-    <div id="gifSpot">
+    <div class="row bg-dark">
+        <div class="col-7 mx-auto" id="buttonHolder">
+        </div>
+        <div class="col-4 mx-auto" id="addButton">
+            <form>
+                <div class="form-group">
+                    <label for="entry">
+                        <h4>Add a comic character</h4>
+                    </label>
+                    <input type="field" class="form-control" id="entry" placeholder="Character's name">
+                </div>
+                <button type="submit" class="btn btn-dark" id="submit">Submit</button>
+            </form>
+            <div class="col-1">
+            </div>
+        </div>
+    </div>
+    <div class="row col-12 transparent" id="gifSpot">
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script>
 
-        $("button").on("click", function () {
+        var buttonArray = ["Batman", "Joker", "The Green Lantern", "Groot", "Superman", "Silver Surfer", "Dr. Strange"];
+        function populateButtons() {
+            $("#buttonHolder").empty();
+            for (var i = 0; i < buttonArray.length; i++) {
+                var button = $("<button class='btn btn-dark m-2 gif-button'>");
+                button.text(buttonArray[i]);
+                button.attr("data-buttonName", buttonArray[i]);
+                $("#buttonHolder").append(button);
+            }
+        }
+        populateButtons();
+
+        $(document).on("click", "#submit", function () {
+            event.preventDefault();
+            var newButton = $("#entry").val().trim();
+            buttonArray.push(newButton);
+            populateButtons();
+        });
+
+        $(document).on("click", '.gif-button', function () {
             var search = $(this).attr("data-buttonName");
             var key = "&api_key=fIkVsSR38IPBG8U8aXmxcLA2TQO0R3ae"
             var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + search + key + "&limit=10";
@@ -37,7 +87,6 @@
                 method: "GET"
             })
                 .then(function (response) {
-                    // console.log(queryURL);
 
                     var results = response.data;
 
@@ -46,13 +95,11 @@
                         var gifDiv = $("<div>");
 
                         var p = $("<p>").text("Rating: " + results[i].rating);
-                        // console.log(results[i]);
-                        var gifImage = $("<img id=gifImage>");
+                        var gifImage = $("<img class= m-2 id=gifImage>");
                         gifImage.attr("src", results[i].images.fixed_height_small_still.url);
                         gifImage.attr("data-still", results[i].images.fixed_height_small_still.url);
                         gifImage.attr("data-animate", results[i].images.fixed_height_small.url);
                         gifImage.attr("data-state", "still");
-                        // console.log(results[i].url);
                         gifDiv.append(p);
                         gifDiv.append(gifImage);
                         $("#gifSpot").prepend(gifDiv);
@@ -62,12 +109,10 @@
                             if (state === "still") {
                                 $(this).attr("src", $(this).attr("data-animate"));
                                 $(this).attr("data-state", "animate");
-                                console.log(state);
 
                             } else {
                                 $(this).attr("src", $(this).attr("data-still"));
                                 $(this).attr("data-state", "still");
-                                console.log(state);
 
 
                             }
