@@ -87,7 +87,7 @@
         $(document).on("click", '.gif-button', function () {
             var search = $(this).attr("data-buttonName");
             var key = "&api_key=fIkVsSR38IPBG8U8aXmxcLA2TQO0R3ae"
-            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + search + key + "&limit=10";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + search + key + "&limit=15";
 
             $.ajax({
                 url: queryURL,
